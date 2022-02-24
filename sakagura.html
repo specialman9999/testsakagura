@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>兵庫県酒造組合連合会</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<style>
+    #map {
+        position: fixed;
+        width: 50%;
+    }
+    #features {
+        width: 50%;
+        margin-left: 50%;
+        font-family: sans-serif;
+        overflow-y: scroll;
+        background-color: #fafafa;
+    }
+    section {
+        padding: 25px 50px;
+        line-height: 25px;
+        border-bottom: 1px solid #ddd;
+        opacity: 0.25;
+        font-size: 13px;
+    }
+    section.active {
+        opacity: 1;
+    }
+    section:last-child {
+        border-bottom: none;
+        margin-bottom: 200px;
+    }
+</style>
+
+<div id="map"></div>
+<div id="features">
+    <section id="kamimusubi" class="active">
+        <h3>神結酒造株式会社</h3>
+        <p>
+            酒米の王者「山田錦」の産地・加東市の酒蔵です。
+            地元の山田錦を使用し手作りで丁寧な酒造りを目指し、
+            全国新酒鑑評会で8回の金賞、モンドセレクションで金賞を受賞しています。
+        </p>
+    </section>
+    <section id="okadahonke">
+        <h3>合名会社 岡田本家</h3>
+        <p>
+            明治７年から加古川市野口町良野で酒造りを行っています。
+            加古川の伏流水と兵庫県産米を100％使用し、加古川の地酒『盛典』を醸造しております。
+            自社栽培米「五百万石」をはじめ、県立農業高校、地元農家さん達栽培の「山田錦」も使用し、地域に根ざした酒造りを行っています
+        </p>
+    </section>
+    <section id="sennenichi">
+        <h3>千年一酒造株式会社</h3>
+        <p>
+            創業明治八年、昔ながらの造り酒屋と呼ぶにふさわしいたたずまいで
+            手造りにこだわり伝統の技を頑なに守り、常に誠実をモットーに酒造りに精進いたしております。
+        </p>
+    </section>
+    <section id="nishiyama">
+        <h3>株式会社西山酒造場</h3>
+        <p>
+            西山酒造場は1849年創業の造り酒屋です。
+            兵庫県丹波市に立地し、豊かな自然環境の中でモノづくりを行っています。
+            伝統とは、固定概念を守ることでは無いと考え、変化する時代に合わせ常に変わり続けることを重んじています
+        </p>
+    </section>
+    <section id="kanzaki">
+        <h3>神崎酒造有限会社</h3>
+        <p>
+            姫路藩西光寺野人参役所跡に明治8年に播磨地域の酒米を利用して、
+            郡内では初めて、「岡庭酒造店」として酒造業をスタートさせました。
+            昭和の終戦の頃、食糧難による行政指導により廃業を経験。
+            戦後、同じ地区にあった3蔵で「神崎酒造」として再スタートし、現在に至ります。
+        </p>
+    </section>
+    <section id="akashi">
+        <h3>明石酒類醸造株式会社</h3>
+        <p>
+            私たちの酒造りは、お米の生産農家から消費者に届くまでに関わる全ての人が笑顔に、
+            そして幸せになるお酒造りを目指しています。
+            現在は、ヨーロッパ・アメリカへと販路を拡大しています。
+            日本酒の持つ伝統と新しい時代に挑戦する心を持って日本酒を醸す蔵元です。
+        </p>
+    </section>
+    <section id="sawanotsuru">
+        <h3>沢の鶴株式会社</h3>
+        <p>
+            創業は、1717年（享保2年）。
+            米屋を営む初代喜兵衛が副業として灘の西郷で酒造りを始めたことを発祥としています。
+            現在、沢の鶴のマークの一つになっている「※」印は、米の字からとっています。
+            沢の鶴が米にこだわり、米だけの酒・純米酒にこだわっているのは、この発祥に由来します。
+            「米」（山田錦）、「水」（宮水）、「人」（丹波杜氏）とともに「灘本流の酒造り」を守り品質日本一を目指しています。
+            酒蔵見学は<a href="https://my.matterport.com/show/?m=7uJNtzK8ryJ">こちら</a>から
+        </p>
+    </section>
+    <section id="konishi">
+        <h3>小西酒造株式会社</h3>
+        <p>
+            「味づくり　幸せづくり　ひとすじに」という考えのもと、
+            1550年の創業時から「清酒発祥の地」と言われている伊丹で皆様に育てて頂いている企業でございます。
+            「飲・食」を通じ、皆様の豊かで楽しい生活に少しでもお役に立てる企業になるべく邁進してまいります。
+        </p>
+    </section>
+    <section id="fukuchiya">
+        <h3>香住鶴株式会社</h3>
+        <p>
+            生もと蔵～天然乳酸菌発酵～
+            『香住鶴』は、兵庫県の北部旧香美町にて古来より伝わる日本酒の製造法「生もと系酒母」で
+            全量を造る全国的にも稀な蔵元です。
+            蔵人が一体となって丹念に醸す『香住鶴』の伝統の味をどうぞご賞味下さい。
+        </p>
+    </section>
+
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <section id="charing-cross">
+
+
+
+    </section>
+</div>
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoidHRvc2hpaSIsImEiOiJja2tnN3dtNmkwdTJ0MnVxdGFmd3lqbnY5In0.VfC4e9IOPZevGfMiBxF68w';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/satellite-v9',
+        center: [ 134.95342931450818,34.935745908373065],
+        zoom: 15.5,
+        pitch: 45
+    });
+
+    const chapters = {
+        'kamimusubi': {
+            center: [134.95342931450818,34.935745908373065],
+            zoom: 15.5,
+            pitch: 20
+        },
+        'okadahonke': {
+            center: [ 134.84310368041326,34.75324024551868],
+            zoom: 15,
+            pitch: 0
+        },
+        'sennenichi': {
+            center: [ 134.98738472657465,34.516891025294356],
+            zoom: 13,
+            pitch: 40
+        },
+        'nishiyama': {
+            center: [135.12909554025046,35.24124110542416],
+            zoom: 12.3
+        },
+        'kanzaki': {
+            center: [134.7643095660847,34.93237735045453],
+            zoom: 15.3,
+            pitch: 20
+        },
+        'akashi': {
+            center: [ 135.0121219396266,34.64474060889342],
+            zoom: 12.3
+        },
+        'sawanotsuru': {
+            center: [135.23478670279624,34.703691567680075],
+            zoom: 17.3,
+            pitch: 40
+        },
+        'konishi': {
+            center: [135.4223204389655,34.776869255113446],
+            zoom: 14.3,
+            pitch: 20
+        },
+        'fukuchiya': {
+            center: [134.6109443548344,35.59309117398744 ],
+            zoom: 14.3,
+            pitch: 20
+        }
+    };
+
+    let activeChapterName = 'baker';
+    function setActiveChapter(chapterName) {
+        if (chapterName === activeChapterName) return;
+
+        map.flyTo(chapters[chapterName]);
+
+        document.getElementById(chapterName).classList.add('active');
+        document.getElementById(activeChapterName).classList.remove('active');
+
+        activeChapterName = chapterName;
+    }
+
+    function isElementOnScreen(id) {
+        const element = document.getElementById(id);
+        const bounds = element.getBoundingClientRect();
+        return bounds.top < window.innerHeight && bounds.bottom > 0;
+    }
+
+    // On every scroll event, check which element is on screen
+    window.onscroll = () => {
+        for (const chapterName in chapters) {
+            if (isElementOnScreen(chapterName)) {
+                setActiveChapter(chapterName);
+                break;
+            }
+        }
+    };
+
+    const geojson = {
+'type': 'FeatureCollection',
+'features': [
+{
+'type': 'Feature',
+'properties': {
+'message': 'kamimusubi',
+'iconSize': [200, 159],
+'icon' : 'https://hyogo-sake.or.jp/assets/images/introduction/yashiro/intro_facade_img01.jpg'
+},
+'geometry': {
+'type': 'Point',
+'coordinates': [134.95342931450818,34.935745908373065]
+}
+},
+{
+'type': 'Feature',
+'properties': {
+'message': 'okadahonke',
+'iconSize': [200, 159],
+'icon' : 'https://hyogo-sake.or.jp/assets/images/introduction/kakogawa/intro_facade_img01.jpg'
+},
+'geometry': {
+'type': 'Point',
+'coordinates': [134.84310368041326,34.75324024551868]
+}
+},
+{
+'type': 'Feature',
+'properties': {
+'message': 'sennenichi',
+'iconSize': [200, 159],
+'icon' : 'https://hyogo-sake.or.jp/assets/images/introduction/awaji/intro_facade_img01.jpg'
+},
+'geometry': {
+'type': 'Point',
+'coordinates': [ 134.98738472657465,34.516891025294356],
+}
+},
+{
+'type': 'Feature',
+'properties': {
+'message': 'nishiyama',
+'iconSize': [200, 159],
+'icon' : 'https://hyogo-sake.or.jp/assets/images/introduction/tamba/intro_facade_img01.jpg'
+},
+'geometry': {
+'type': 'Point',
+'coordinates': [135.12909554025046,35.24124110542416]
+}
+},
+{
+'type': 'Feature',
+'properties': {
+'message': 'kanzaki',
+'iconSize': [200, 159],
+'icon' : 'https://hyogo-sake.or.jp/assets/images/introduction/himeji/intro_facade_img01.jpg'
+},
+'geometry': {
+'type': 'Point',
+'coordinates': [134.7643095660847,34.93237735045453]
+}
+},
+{
+'type': 'Feature',
+'properties': {
+'message': 'akashi',
+'iconSize': [200, 159],
+'icon' : 'https://hyogo-sake.or.jp/assets/images/introduction/akashi/intro_facade_img01.jpg'
+},
+'geometry': {
+'type': 'Point',
+'coordinates': [ 135.0121219396266,34.64474060889342]
+}
+},
+{
+'type': 'Feature',
+'properties': {
+'message': 'sawanotsuru',
+'iconSize': [200, 159],
+'icon' : 'https://hyogo-sake.or.jp/assets/images/introduction/nadagogo/intro_facade_img13.jpg'
+},
+'geometry': {
+'type': 'Point',
+'coordinates': [135.23478670279624,34.703691567680075]
+}
+},
+{
+'type': 'Feature',
+'properties': {
+'message': 'konishi',
+'iconSize': [200, 159],
+'icon' : 'https://hyogo-sake.or.jp/assets/images/introduction/itami/intro_facade_img01.jpg'
+},
+'geometry': {
+'type': 'Point',
+'coordinates': [135.4223204389655,34.776869255113446]
+}
+},
+{
+'type': 'Feature',
+'properties': {
+'message': 'fukuchiya',
+'iconSize': [200, 159],
+'icon' : 'https://hyogo-sake.or.jp/assets/images/introduction/kitahyogo/intro_facade_img01.jpg'
+},
+'geometry': {
+'type': 'Point',
+'coordinates': [134.6109443548344,35.59309117398744 ]
+}
+}
+]
+};
+
+for (const marker of geojson.features) {
+// Create a DOM element for each marker.
+const el = document.createElement('div');
+const width = marker.properties.iconSize[0];
+const height = marker.properties.iconSize[1];
+el.className = 'marker';
+el.style.backgroundImage = `url(`  + marker.properties.icon + `)`;
+el.style.width = `${width}px`;
+el.style.height = `${height}px`;
+el.style.backgroundSize = '100%';
+ 
+// Add markers to the map.
+new mapboxgl.Marker(el)
+.setLngLat(marker.geometry.coordinates)
+.addTo(map);
+}
+</script>
+
+</body>
+</html>
